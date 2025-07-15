@@ -1,4 +1,7 @@
+pip==24.0 
+cython==0.29.37
 numpy==1.23.3
+h5py==2.10.0
 image==1.5.32
 imageio==2.8.0
 matplotlib==3.5.3
@@ -26,4 +29,3 @@ tornado==6.2
 tqdm==4.64.1
 urllib3==1.26.12
 wandb==0.13.3
-h5py==2.10.0
