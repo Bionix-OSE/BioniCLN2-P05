@@ -1,6 +1,4 @@
-pip==24.0 
-cython==0.29.37
-numpy==1.23.3
+# You need to first install pip==24.0, numpy==1.23.3 and cython==0.29.37 before attempting to install these
 h5py==2.10.0
 image==1.5.32
 imageio==2.8.0
