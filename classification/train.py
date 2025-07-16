@@ -387,7 +387,7 @@ def main(hparams):
                                 devices=-1,
                                 logger=logger,
                                 strategy='ddp',
-                                min_epochs=50,
+                                min_epochs=40,
                                 callbacks=[LRLoggingCallback(),
                                            early_stop_callback,
                                            checkpoint_callback
