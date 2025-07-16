@@ -95,11 +95,11 @@ class DeepHsModule(lightning.LightningModule):
                           shuffle=True, drop_last=True, collate_fn=None)
 
     def val_dataloader(self) -> DataLoader:
-        return DataLoader(self.val_dataset, 1, num_workers=self.hparams['num_workers'],
+        return DataLoader(self.val_dataset, self.hparams['batch_size'], num_workers=self.hparams['num_workers'],
                           shuffle=False)
 
     def test_dataloader(self):
-        return DataLoader(self.test_dataset, 1, num_workers=self.hparams['num_workers'])
+        return DataLoader(self.test_dataset, self.hparams['batch_size'], num_workers=self.hparams['num_workers'])
 
     def forward(self, x, channel_wavelengths, test_augmentation=True):
         if test_augmentation:
@@ -369,7 +369,7 @@ def main(hparams):
     early_stop_callback = EarlyStopping(
         monitor='val/loss',
         min_delta=0.00,
-        verbose=True,
+        verbose=False,
         mode='min',
         patience=20
     )
@@ -377,7 +377,7 @@ def main(hparams):
     checkpoint_callback = ModelCheckpoint(
         filename='best',
         save_top_k=1,
-        verbose=True,
+        verbose=False,
         monitor='val/loss',
         mode='min'
     )
