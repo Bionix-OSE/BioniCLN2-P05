@@ -386,7 +386,7 @@ def main(hparams):
                                 accelerator='cuda',
                                 devices=-1,
                                 logger=logger,
-                                strategy='auto',
+                                strategy='ddp',
                                 min_epochs=50,
                                 callbacks=[LRLoggingCallback(),
                                            early_stop_callback,
