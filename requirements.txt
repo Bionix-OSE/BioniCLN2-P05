@@ -3,6 +3,7 @@ h5py==2.10.0
 image==1.5.32
 imageio==2.8.0
 matplotlib==3.5.3
+matplotlib_inline # For ipykernel >=6
 opencv-contrib-python==4.6.0.66
 opencv-python==4.6.0.66
 PyExifTool==0.1.1
@@ -27,3 +28,4 @@ tornado==6.2
 tqdm==4.64.1
 urllib3==1.26.12
 wandb==0.13.3
+PIL

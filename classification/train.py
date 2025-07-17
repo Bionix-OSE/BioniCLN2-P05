@@ -383,17 +383,18 @@ def main(hparams):
     )
 
     trainer = lightning.Trainer(max_epochs=opt.num_epochs,
-                                accelerator='gpu',
+                                accelerator='cuda',
                                 devices=-1,
                                 logger=logger,
                                 strategy='ddp',
-                                min_epochs=40,
+                                min_epochs=50,
                                 callbacks=[LRLoggingCallback(),
                                            early_stop_callback,
                                            checkpoint_callback
                                            ],
                                 log_every_n_steps=1,
-                                num_sanity_val_steps=0)
+                                num_sanity_val_steps=0,
+                                enable_progress_bar=True if torch.distributed.get_rank() == 0 else False)
 
     trainer.fit(model)
     best_model = DeepHsModule.load_from_checkpoint(
