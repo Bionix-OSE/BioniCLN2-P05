@@ -365,7 +365,7 @@ def main(hparams):
 
     model = DeepHsModule(hparams)
     logger = WandbLogger(offline=not hparams['online_logging'], save_dir=hparams['log_path'],
-                         project='deephs', log_model=True) if 'logger' not in hparams.keys() else hparams['logger']
+                         project='deephs') if 'logger' not in hparams.keys() else hparams['logger']
 
     early_stop_callback = EarlyStopping(
         monitor='val/loss',
