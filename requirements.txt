@@ -29,3 +29,4 @@ tqdm==4.64.1
 urllib3==1.26.12
 wandb==0.13.3
 pillow==9.2.0
+ipython==7.34.0

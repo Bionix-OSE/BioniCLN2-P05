@@ -5,6 +5,7 @@ from pytorch_lightning.callbacks import ModelCheckpoint
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 from pytorch_lightning.loggers.wandb import WandbLogger
 import torch
+import logging
 from torch.utils.data import DataLoader
 from torchvision import transforms 
 import wandb
@@ -364,7 +365,7 @@ def main(hparams):
 
     model = DeepHsModule(hparams)
     logger = WandbLogger(offline=not hparams['online_logging'], save_dir=hparams['log_path'],
-                         project='deephs') if 'logger' not in hparams.keys() else hparams['logger']
+                         project='deephs', log_model=True) if 'logger' not in hparams.keys() else hparams['logger']
 
     early_stop_callback = EarlyStopping(
         monitor='val/loss',
@@ -419,5 +420,7 @@ if __name__ == "__main__":
         opt.log_path = get_wandb_log_dir()
 
     hparams = vars(opt)
+
+    logging.getLogger('lightning').setLevel(0)
 
     main(hparams)
