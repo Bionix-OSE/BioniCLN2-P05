@@ -384,7 +384,7 @@ def main(hparams):
 
     trainer = lightning.Trainer(max_epochs=opt.num_epochs,
                                 accelerator='cuda',
-                                devices=-1,
+                                devices='auto',
                                 logger=logger,
                                 strategy='auto',
                                 min_epochs=50,
