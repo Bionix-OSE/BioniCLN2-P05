@@ -1,12 +1,12 @@
-# filepath: /mango-quality-classification/mango-quality-classification/src/predict.py
 import os
 import torch
 from torchvision import transforms
+import argparse
 from classification.models.deep_hs_module import DeepHsModule
 from core.datasets.hyperspectral_dataset import HyperspectralDataset
 from types.index import MangoImage
 
-class MangoQualityPredictor:
+class DeepHSPredictor:
     def __init__(self, model_path, data_path, input_size=(64, 64)):
         self.model = DeepHsModule.load_from_checkpoint(model_path)
         self.model.eval()
@@ -20,7 +20,7 @@ class MangoQualityPredictor:
     def load_images(self):
         images = []
         for filename in os.listdir(self.data_path):
-            if filename.endswith('.npy'):  # Assuming hyperspectral images are in .npy format
+            if filename.endswith('.bin'):  # Assuming hyperspectral images are in .bin format
                 file_path = os.path.join(self.data_path, filename)
                 images.append(MangoImage(file_path=file_path))
         return images
@@ -40,11 +40,19 @@ class MangoQualityPredictor:
                 predictions.append((mango_image.file_path, predicted_class))
         return predictions
 
-def main():
-    model_path = 'path/to/your/best_model.ckpt'  # Update with the actual model path
-    data_path = 'path/to/your/mango/images'  # Update with the actual data path
+def get_parser():
+    parser = argparse.ArgumentParser("DeepHS detector:")
+    parser.add_argument('--model_path', type=str, required=True, help='Path to the trained model checkpoint.')
+    parser.add_argument('--data_path', type=str, required=True, help='Path to the directory containing mango images.')
+    return parser
 
-    predictor = MangoQualityPredictor(model_path, data_path)
+def main():
+    parser = get_parser()
+    args = parser.parse_args()
+    model_path = args.model_path
+    data_path = args.data_path
+
+    predictor = DeepHSPredictor(model_path, data_path)
     mango_images = predictor.load_images()
     results = predictor.predict(mango_images)
 
