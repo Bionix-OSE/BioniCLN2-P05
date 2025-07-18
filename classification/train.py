@@ -282,7 +282,7 @@ class DeepHsModule(lightning.LightningModule):
         self.optimizer = torch.optim.Adam(
             self.model.parameters(), lr=self.hparams['lr'])
         self.scheduler = torch.optim.lr_scheduler.StepLR(self.optimizer, 30,
-                                                         verbose=True)
+                                                         verbose=False)
 
         return {
             'optimizer': self.optimizer,
@@ -394,7 +394,7 @@ def main(hparams):
                                            ],
                                 log_every_n_steps=1,
                                 num_sanity_val_steps=0,
-                                enable_progress_bar=False)
+                                enable_progress_bar=True)
 
     trainer.fit(model)
     best_model = DeepHsModule.load_from_checkpoint(
