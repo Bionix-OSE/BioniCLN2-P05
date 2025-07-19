@@ -64,7 +64,6 @@ def main():
         'model': args.model,
         'bands': len(util.get_wavelengths_for(camera_type_enum)),
         'wavelengths': util.get_wavelengths_for(camera_type_enum),
-        'num_classes': args.num_classes,
         'classification_type': args.classification_type,
         'camera_type': camera_type_enum,
         'num_classes': 3
