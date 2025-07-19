@@ -3,9 +3,9 @@ import torch
 from torchvision import transforms
 import argparse
 from classification.model_factory import get_model
-from core.datasets.hyperspectral_dataset import HyperspectralDataset
+from core.datasets.hyperspectral_dataset import HyperspectralDataset, get_records
 from classification.transformers.normalize import Normalize
-from core.name_convention import CameraType
+from core.name_convention import CameraType, ClassificationType, Fruit
 import core.util as util
 
 class DeepHSPredictor:
@@ -33,10 +33,18 @@ class DeepHSPredictor:
         common_preprocessing = [Normalize(camera_type)]
         transform = transforms.Compose(common_preprocessing)
 
+        # Use get_records to build the correct record objects
+        _, _, test_records = get_records(
+            fruit=Fruit.MANGO,
+            camera_type=hparams['camera_type'],
+            classification_type=hparams['classification_type'],
+            use_inter_ripeness_levels=True,
+            extend_unripe=False
+        )
+
         self.dataset = HyperspectralDataset(
             classification_type=hparams['classification_type'],
-            records=[{"bin_path": os.path.join(data_path, f), "hdr_path": os.path.join(data_path, f.replace('.bin', '.hdr'))}
-                     for f in os.listdir(data_path) if f.endswith('.bin')],
+            records=test_records,
             data_path=data_path,
             transform=transform,
             input_size=input_size
@@ -58,7 +66,6 @@ def get_parser():
     parser.add_argument('--model_path', type=str, required=True, help='Path to the trained model checkpoint.')
     parser.add_argument('--data_path', type=str, required=True, help='Path to the directory containing mango images.')
     parser.add_argument('--model', type=str, required=True, choices=['deephs_net', 'hyve', 'resnet', 'alexnet', 'spectralnet', 'se_resnet', 'deephs_net_se'])
-    parser.add_argument('--classification_type', type=str, default='ripeness')
     parser.add_argument('--camera_type', type=str, default='VIS')
     parser.add_argument("--camera_agnostic_num_gauss", default=5, type=int)
     return parser
@@ -71,7 +78,7 @@ def main():
         'model': args.model,
         'bands': len(util.get_wavelengths_for(camera_type_enum)),
         'wavelengths': util.get_wavelengths_for(camera_type_enum),
-        'classification_type': args.classification_type,
+        'classification_type': ClassificationType.RIPENESS,
         'camera_type': camera_type_enum,
         'camera_agnostic_num_gauss': args.camera_agnostic_num_gauss,
         'num_classes': 3
