@@ -2,11 +2,14 @@ import os
 import torch
 from torchvision import transforms
 import argparse
+import torch.nn.functional as fn
 from classification.model_factory import get_model
 from core.datasets.hyperspectral_dataset import HyperspectralDataset, get_records
 from classification.transformers.normalize import Normalize
 from core.name_convention import CameraType, ClassificationType, Fruit
 import core.util as util
+
+CLASS_NAMES = ["Unripe", "Ripe", "Overripe"]
 
 class DeepHSPredictor:
     def __init__(self, model_path, hparams, data_path, input_size=(64, 64), camera_type=CameraType.VIS):
@@ -56,8 +59,17 @@ class DeepHSPredictor:
                 x, y, channel_wavelengths = self.dataset[idx]
                 x = x.unsqueeze(0)
                 output = self.model(x, channel_wavelengths=channel_wavelengths)
+                probs = fn.softmax(output, dim=1)
                 predicted_class = output.argmax(dim=1).item()
-                predictions.append(predicted_class)
+                confidence = probs[0, predicted_class].item()
+                record = self.dataset.records[idx]
+                file_path = getattr(record, "bin_path", getattr(record, "file_path", "unknown"))
+                predictions.append({
+                    "file": file_path,
+                    "class_id": predicted_class,
+                    "class_name": CLASS_NAMES[predicted_class],
+                    "confidence": confidence
+                })
         return predictions
 
 def get_parser():
@@ -88,8 +100,8 @@ def main():
     predictor = DeepHSPredictor(model_path, hparams, data_path, camera_type=hparams['camera_type'])
     results = predictor.predict()
 
-    for predicted_class in results:
-        print(f"Predicted Class: {predicted_class}")
+    for pred in results:
+        print(f"File: {pred['file']}, Predicted: {pred['class_name']} (class {pred['class_id']}), Confidence: {pred['confidence']:.2f}")
 
 if __name__ == "__main__":
     main()
