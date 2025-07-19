@@ -16,10 +16,17 @@ class DeepHSPredictor:
         # Instantiate model using the factory
         self.model = get_model(hparams)
         checkpoint = torch.load(model_path, map_location='cpu')
-        if 'state_dict' in checkpoint:
-            self.model.load_state_dict(checkpoint['state_dict'])
-        else:
-            self.model.load_state_dict(checkpoint)
+        state_dict = checkpoint['state_dict'] if 'state_dict' in checkpoint else checkpoint
+
+        # Remove 'model.' prefix if present
+        new_state_dict = {}
+        for k, v in state_dict.items():
+            if k.startswith('model.'):
+                new_state_dict[k[len('model.'):]] = v
+            else:
+                new_state_dict[k] = v
+
+        self.model.load_state_dict(new_state_dict)
         self.model.eval()
 
         # Preprocessing as in trainer
