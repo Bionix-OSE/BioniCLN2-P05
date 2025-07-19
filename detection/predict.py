@@ -66,6 +66,7 @@ def main():
         'wavelengths': util.get_wavelengths_for(camera_type_enum),
         'classification_type': args.classification_type,
         'camera_type': camera_type_enum,
+        'camera_agnostic_num_gauss': args.camera_agnostic_num_gauss,
         'num_classes': 3
     }
     model_path = args.model_path
