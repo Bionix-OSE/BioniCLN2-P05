@@ -63,7 +63,10 @@ class DeepHSPredictor:
                 predicted_class = output.argmax(dim=1).item()
                 confidence = probs[0, predicted_class].item()
                 record = self.dataset.records[idx]
-                file_path = getattr(record, "bin_path", getattr(record, "file_path", "unknown"))
+                file_path = next(
+                    (getattr(record, attr) for attr in ["bin_path", "file_path", "path", "image_path"] if hasattr(record, attr)),
+                    "unknown"
+                )
                 predictions.append({
                     "file": file_path,
                     "class_id": predicted_class,
