@@ -59,12 +59,13 @@ def get_parser():
 def main():
     parser = get_parser()
     args = parser.parse_args()
+    camera_type_enum = getattr(CameraType, args.camera_type)
     hparams = {
         'model': args.model,
-        'bands': len(util.get_wavelengths_for(args.camera_type)),
+        'bands': len(util.get_wavelengths_for(camera_type_enum)),
         'num_classes': args.num_classes,
         'classification_type': args.classification_type,
-        'camera_type': getattr(CameraType, args.camera_type),
+        'camera_type': camera_type_enum,
     }
     model_path = args.model_path
     data_path = args.data_path
