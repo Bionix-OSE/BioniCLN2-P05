@@ -39,7 +39,6 @@ class DeepHSPredictor:
             camera_type=hparams['camera_type'],
             classification_type=hparams['classification_type'],
             use_inter_ripeness_levels=True,
-            extend_unripe=False
         )
 
         self.dataset = HyperspectralDataset(
