@@ -51,9 +51,9 @@ def get_parser():
     parser.add_argument('--model_path', type=str, required=True, help='Path to the trained model checkpoint.')
     parser.add_argument('--data_path', type=str, required=True, help='Path to the directory containing mango images.')
     parser.add_argument('--model', type=str, required=True, choices=['deephs_net', 'hyve', 'resnet', 'alexnet', 'spectralnet', 'se_resnet', 'deephs_net_se'])
-    parser.add_argument('--num_classes', type=int, default=3)
     parser.add_argument('--classification_type', type=str, default='ripeness')
     parser.add_argument('--camera_type', type=str, default='VIS')
+    parser.add_argument("--camera_agnostic_num_gauss", default=5, type=int)
     return parser
 
 def main():
@@ -67,6 +67,7 @@ def main():
         'num_classes': args.num_classes,
         'classification_type': args.classification_type,
         'camera_type': camera_type_enum,
+        'num_classes': 3
     }
     model_path = args.model_path
     data_path = args.data_path
